@@ -153,13 +153,11 @@ class TestAccountService(TestCase):
     ######################################################################
 
     def test_get_accounts_list(self):
-        """It should Read a single Account"""
+        """It should take out all the accounts"""
         # Создание 5 экземпляра модели Account для использования в тесте
         account = self._create_accounts(5)
         # Выполнение GET-запроса к API для получения информации о  объектам Account
-        resp = self.client.get(
-            f"{BASE_URL}/", content_type="application/json"
-        )
+        resp = self.client.get(BASE_URL)
         # Проверка статус-кода HTTP-ответа на наличие ошибок
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         # Получение данных из ответа в формате JSON
@@ -169,7 +167,7 @@ class TestAccountService(TestCase):
 
 
     def test_get_accounts_list_not_found(self):
-        """It should not Read an Account that is not found"""
-        resp = self.client.get(f"{BASE_URL}")
+        """It should not read accounts that are not found"""
+        resp = self.client.get(BASE_URL)
         self.assertEqual(resp.get_json(), [])
         self.assertEqual(resp.status_code, status.HTTP_200_OK)

@@ -61,8 +61,25 @@ def create_accounts():
 # LIST ALL ACCOUNTS
 ######################################################################
 
-# ... place you code here to LIST accounts ...
-
+@app.route("/accounts", methods=["GET"])
+def get_accounts_list():
+    """
+    Reads accounts.
+    This endpoint reads accounts
+    """
+    # Запись информации о запросе в лог-файл приложения
+    app.logger.info("Request to list Accounts")
+        
+    # Поиск объектов Account в базе данных
+    accounts = Account.all()
+    account_list = [account.serialize() for account in accounts]
+    # Если объекты не найден, то возвращается ошибка 202 и пустой список []
+    app.logger.info("Returning [%s] accounts", len(account_list))
+    if not account_list:
+        return jsonify([]), status.HTTP_200_OK
+        
+    # Возвращение данных об объектам Account в формате JSON и статус-кода 200 OK
+    return jsonify(account_list), status.HTTP_200_OK
 
 ######################################################################
 # READ AN ACCOUNT
