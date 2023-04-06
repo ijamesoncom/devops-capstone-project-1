@@ -123,16 +123,23 @@ class TestAccountService(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
-    # ADD YOUR TEST CASES HERE ...
+    ######################################################################
+    #  READ AN ACCOUNT  T E S T   C A S E S
+    ######################################################################
 
     def test_get_account(self):
         """It should Read a single Account"""
+        # Создание одного экземпляра модели Account для использования в тесте
         account = self._create_accounts(1)[0]
+        # Выполнение GET-запроса к API для получения информации о данном объекте Account по его id
         resp = self.client.get(
             f"{BASE_URL}/{account.id}", content_type="application/json"
         )
+        # Проверка статус-кода HTTP-ответа на наличие ошибок
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        # Получение данных из ответа в формате JSON
         data = resp.get_json()
+        # Проверка, что имя полученного объекта Account соответствует ожидаемому значению
         self.assertEqual(data["name"], account.name)
 
 
@@ -140,3 +147,29 @@ class TestAccountService(TestCase):
         """It should not Read an Account that is not found"""
         resp = self.client.get(f"{BASE_URL}/0")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    ######################################################################
+    #  LIST ALL ACCOUNTS   T E S T   C A S E S
+    ######################################################################
+
+    def test_get_accounts_list(self):
+        """It should Read a single Account"""
+        # Создание 5 экземпляра модели Account для использования в тесте
+        account = self._create_accounts(5)
+        # Выполнение GET-запроса к API для получения информации о  объектам Account
+        resp = self.client.get(
+            f"{BASE_URL}/", content_type="application/json"
+        )
+        # Проверка статус-кода HTTP-ответа на наличие ошибок
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        # Получение данных из ответа в формате JSON
+        data = resp.get_json()
+        # Проверка, что длина полученных объектов Account соответствует ожидаемому значению
+        self.assertEqual(len(data), len(account))
+
+
+    def test_get_accounts_list_not_found(self):
+        """It should not Read an Account that is not found"""
+        resp = self.client.get(f"{BASE_URL}")
+        self.assertEqual(resp.get_json(), [])
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)

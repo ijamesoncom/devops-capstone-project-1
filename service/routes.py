@@ -74,11 +74,19 @@ def get_accounts(account_id):
     Reads an Account
     This endpoint will read an Account based the account_id that is requested
     """
+    # Запись информации о запросе в лог-файл приложения
     app.logger.info("Request to read an Account with id: %s", account_id)
+    
+    # Поиск объекта Account в базе данных по его id
     account = Account.find(account_id)
+    
+    # Если объект не найден, то возвращается ошибка 404 и сообщение об ошибке
     if not account:
         abort(status.HTTP_404_NOT_FOUND, f"Account with id [{account_id}] could not be found.")
+    
+    # Возвращение данных об объекте Account в формате JSON и статус-кода 200 OK
     return account.serialize(), status.HTTP_200_OK
+
 
 
 ######################################################################
