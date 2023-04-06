@@ -32,6 +32,20 @@ echo "Installing Python dependencies..."
 pip install --upgrade pip wheel
 pip install -r requirements.txt
 
+# Проверяем, установлен ли make
+if ! command -v make &> /dev/null
+then
+    echo "make not found. Installing make..."
+    sudo apt-get update
+    sudo apt-get install -y make
+fi
+
+echo "Starting the Postgres Docker container..."
+make db
+
+echo "Checking the Postgres Docker container..."
+docker ps
+
 # Вывод сообщения об успешном завершении настройки
 echo "****************************************"
 echo " Capstone Environment Setup Complete"
