@@ -32,7 +32,7 @@ jobs:
     # Требуются зависимости пакетов python \ Шаги для локального запуска
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.5.0
+        uses: actions/checkout@v3
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip wheel
