@@ -61,6 +61,7 @@ def create_accounts():
 # LIST ALL ACCOUNTS
 ######################################################################
 
+
 @app.route("/accounts", methods=["GET"])
 def get_accounts_list():
     """
@@ -69,7 +70,6 @@ def get_accounts_list():
     """
     # Запись информации о запросе в лог-файл приложения
     app.logger.info("Request to list Accounts")
-        
     # Поиск объектов Account в базе данных
     accounts = Account.all()
     account_list = [account.serialize() for account in accounts]
@@ -77,13 +77,14 @@ def get_accounts_list():
     app.logger.info("Returning [%s] accounts", len(account_list))
     if not account_list:
         return jsonify([]), status.HTTP_200_OK
-        
     # Возвращение данных об объектам Account в формате JSON и статус-кода 200 OK
     return jsonify(account_list), status.HTTP_200_OK
+
 
 ######################################################################
 # READ AN ACCOUNT
 ######################################################################
+
 
 @app.route("/accounts/<int:account_id>", methods=["GET"])
 def get_accounts(account_id):
@@ -93,22 +94,20 @@ def get_accounts(account_id):
     """
     # Запись информации о запросе в лог-файл приложения
     app.logger.info("Request to read an Account with id: %s", account_id)
-    
     # Поиск объекта Account в базе данных по его id
     account = Account.find(account_id)
-    
     # Если объект не найден, то возвращается ошибка 404 и сообщение об ошибке
     if not account:
         abort(status.HTTP_404_NOT_FOUND, f"Account with id [{account_id}] could not be found.")
-    
+
     # Возвращение данных об объекте Account в формате JSON и статус-кода 200 OK
     return account.serialize(), status.HTTP_200_OK
-
 
 
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT
 ######################################################################
+
 
 @app.route("/accounts/<int:account_id>", methods=["PUT"])
 def update_accounts(account_id):
