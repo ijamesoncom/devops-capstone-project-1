@@ -5,10 +5,10 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application contents
+# Копирует содержимое каталога service/ из текущего каталога внутрь контейнера в /app/service/
 COPY service/ ./service/
 
-# Switch to a non-root user
+# Создает нового пользователя с идентификатором 1000, называется "theia", и устанавливает его владельцем всей директории /app.
 RUN useradd --uid 1000 theia && chown -R theia /app
 USER theia
 
