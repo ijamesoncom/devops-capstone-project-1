@@ -1,12 +1,30 @@
+# Версия API для Kubernetes, с которой работает этот файл конфигурации
 apiVersion: v1
+
+# Тип ресурса - в данном случае PersistentVolumeClaim
 kind: PersistentVolumeClaim
+
+# Метаданные PVC
 metadata:
-  name: pipelinerun-pvc
+# Уникальное имя PVC в пределах кластера
+name: pipelinerun-pvc
+
+# Спецификация PVC
 spec:
-  storageClassName: skills-network-learner
-  resources:
-    requests:
-      storage:  1Gi
-  volumeMode: Filesystem
-  accessModes:
-    - ReadWriteMany
+# Имя класса хранилища, к которому должна быть привязана PVC
+storageClassName: skills-network-learner
+
+# Запрос на ресурсы, необходимые для PVC
+resources:
+  # Запрос на объем хранилища
+  requests:
+    # Запрашиваемый объем хранилища - 1 гигабайт
+    storage: 1Gi
+
+# Режим тома для PVC - в данном случае файловая система
+volumeMode: Filesystem
+
+# Режимы доступа, которые должны быть разрешены для PVC
+accessModes:
+  # ReadWriteMany - Множество клиентов может читать и записывать данные на PVC одновременно
+  - ReadWriteMany

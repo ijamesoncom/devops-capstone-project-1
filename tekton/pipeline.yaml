@@ -4,35 +4,63 @@
 #   - flake8
 #
 ---
+# Версия API для Tekton Pipelines
 apiVersion: tekton.dev/v1beta1
+
+# Тип ресурса - в данном случае Pipeline
 kind: Pipeline
-metadata:  
+
+# Метаданные Pipeline
+metadata:
+  # Уникальное имя Pipeline в пределах кластера
   name: cd-pipeline
+
+# Спецификация Pipeline
 spec:
+  # Рабочие области, используемые в Pipeline
   workspaces:
+    # Рабочая область 'pipeline-workspace'
     - name: pipeline-workspace
+
+  # Входные параметры для Pipeline
   params:
+    # Параметр 'repo-url'
     - name: repo-url
+    # Параметр 'branch' с значением по умолчанию 'main'
     - name: branch
       default: main
+
+  # Список задач, выполняемых в Pipeline
   tasks:
+    # Задача 1: Init (Cleanup Task)
     - name: init
+      # Рабочие области, используемые в задаче
       workspaces:
+        # Рабочая область 'source' связана с 'pipeline-workspace'
         - name: source
-          workspace: pipeline-workspace          
+          workspace: pipeline-workspace
+      # Ссылка на предопределенную задачу 'cleanup'
       taskRef:
         name: cleanup
 
+    # Задача 2: Clone (Git-Clone Task)
     - name: clone
+      # Рабочие области, используемые в задаче
       workspaces:
+        # Рабочая область 'output' связана с 'pipeline-workspace'
         - name: output
-          workspace: pipeline-workspace          
+          workspace: pipeline-workspace
+      # Ссылка на предопределенную задачу 'git-clone'
       taskRef:
         name: git-clone
+      # Входные параметры для задачи
       params:
-      - name: url
-        value: $(params.repo-url)
-      - name: revision
-        value: $(params.branch)
+        # Параметр 'url', значение берется из параметра 'repo-url' Pipeline
+        - name: url
+          value: $(params.repo-url)
+        # Параметр 'revision', значение берется из параметра 'branch' Pipeline
+        - name: revision
+          value: $(params.branch)
+      # Указание на выполнение задачи 'clone' после завершения задачи 'init'
       runAfter:
         - init
