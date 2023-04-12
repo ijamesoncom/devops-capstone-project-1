@@ -4,7 +4,7 @@ oc create deployment accounts \
   --dry-run=client -o yaml > deploy/deployment.yaml
 
 ################################
-#
+# 
 ################################
 
           env:
