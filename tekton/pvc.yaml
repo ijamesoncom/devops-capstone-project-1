@@ -6,25 +6,25 @@ kind: PersistentVolumeClaim
 
 # Метаданные PVC
 metadata:
-# Уникальное имя PVC в пределах кластера
-name: pipelinerun-pvc
+  # Уникальное имя PVC в пределах кластера
+  name: pipelinerun-pvc
 
 # Спецификация PVC
 spec:
-# Имя класса хранилища, к которому должна быть привязана PVC
-storageClassName: skills-network-learner
+  # Имя класса хранилища, к которому должна быть привязана PVC
+  storageClassName: skills-network-learner
 
-# Запрос на ресурсы, необходимые для PVC
-resources:
+  # Запрос на ресурсы, необходимые для PVC
+  resources:
   # Запрос на объем хранилища
-  requests:
-    # Запрашиваемый объем хранилища - 1 гигабайт
-    storage: 1Gi
+    requests:
+      # Запрашиваемый объем хранилища - 1 гигабайт
+      storage: 1Gi
 
-# Режим тома для PVC - в данном случае файловая система
-volumeMode: Filesystem
+  # Режим тома для PVC - в данном случае файловая система
+  volumeMode: Filesystem
 
-# Режимы доступа, которые должны быть разрешены для PVC
-accessModes:
+  # Режимы доступа, которые должны быть разрешены для PVC
+  accessModes:
   # ReadWriteMany - Множество клиентов может читать и записывать данные на PVC одновременно
-  - ReadWriteMany
+    - ReadWriteMany

@@ -55,12 +55,12 @@ spec:
         name: git-clone
       # Входные параметры для задачи
       params:
-        # Параметр 'url', значение берется из параметра 'repo-url' Pipeline
-        - name: url
-          value: $(params.repo-url)
-        # Параметр 'revision', значение берется из параметра 'branch' Pipeline
-        - name: revision
-          value: $(params.branch)
+      # Параметр 'url', значение берется из параметра 'repo-url' Pipeline
+      - name: url
+        value: $(params.repo-url)
+      # Параметр 'revision', значение берется из параметра 'branch' Pipeline
+      - name: revision
+        value: $(params.branch)
       # Указание на выполнение задачи 'clone' после завершения задачи 'init'
       runAfter:
         - init
