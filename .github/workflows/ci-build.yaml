@@ -12,7 +12,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: python:3.6-slim
+    container: python:3.9-slim
 
     # Требуется зависимость с БД postgres:alpine \ Шаги для локального запуска
     services:
