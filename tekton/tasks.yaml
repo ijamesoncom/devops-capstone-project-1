@@ -1,52 +1,98 @@
+# Задача 1: Echo Task
 ---
+# Версия API для Tekton Pipelines
 apiVersion: tekton.dev/v1beta1
+
+# Тип ресурса - в данном случае Task
 kind: Task
+
+# Метаданные Task
 metadata:
+  # Уникальное имя Task в пределах кластера
   name: echo
+
+# Спецификация Task
 spec:
+  # Описание Task
   description: This task will echo the message.
+
+  # Входные параметры для Task
   params:
+    # Параметр 'message'
     - name: message
+      # Описание параметра 'message'
       description: The message to echo
+      # Тип параметра 'message' - строка
       type: string
+
+  # Шаги для выполнения в Task
   steps:
+    # Шаг 1: Echo the message
     - name: echo-message
+      # Используемый образ контейнера
       image: alpine:3
+      # Команда для выполнения в контейнере
       command: [/bin/echo]
+      # Аргументы для команды
       args: ["$(params.message)"]
+
+
+# Задача 2: Cleanup Task
 ---
+# Версия API для Tekton Pipelines
 apiVersion: tekton.dev/v1beta1
+
+# Тип ресурса - в данном случае Task
 kind: Task
+
+# Метаданные Task
 metadata:
+  # Уникальное имя Task в пределах кластера
   name: cleanup
+
+# Спецификация Task
 spec:
+  # Описание Task
   description: This task will clean up a workspace by deleting all of the files.
+
+  # Рабочие области, используемые в Task
   workspaces:
+    # Рабочая область 'source'
     - name: source
+
+  # Шаги для выполнения в Task
   steps:
+    # Шаг 1: Удаление файлов
     - name: remove
+      # Используемый образ контейнера
       image: alpine:3
+      # Переменные среды для контейнера
       env:
+        # Установка переменной окружения WORKSPACE_SOURCE_PATH
         - name: WORKSPACE_SOURCE_PATH
           value: $(workspaces.source.path)
+      # Рабочий каталог для контейнера
       workingDir: $(workspaces.source.path)
+      # Контекст безопасности для контейнера
       securityContext:
+        # Запуск контейнера не от имени root
         runAsNonRoot: false
+        # Запуск контейнера от имени пользователя с UID 0 (root)
         runAsUser: 0
+      # Скрипт для выполнения в контейнере
       script: |
         #!/usr/bin/env sh
         set -eu
         echo "Removing all files from ${WORKSPACE_SOURCE_PATH} ..."
-        # Delete any existing contents of the directory if it exists.
+        # Удаление существующего содержимого директории, если она существует.
         #
-        # We don't just "rm -rf ${WORKSPACE_SOURCE_PATH}" because ${WORKSPACE_SOURCE_PATH} might be "/"
-        # or the root of a mounted volume.
+        # Мы не просто используем "rm -rf ${WORKSPACE_SOURCE_PATH}", потому что ${WORKSPACE_SOURCE_PATH} может быть "/"
+        # или корнем примонтированного тома.
         if [ -d "${WORKSPACE_SOURCE_PATH}" ] ; then
-          # Delete non-hidden files and directories
+          # Удаление не скрытых файлов и директорий
           rm -rf "${WORKSPACE_SOURCE_PATH:?}"/*
-          # Delete files and directories starting with . but excluding ..
+          # Удаление файлов и директорий, начинающихся с ".", но исключая ".."
           rm -rf "${WORKSPACE_SOURCE_PATH}"/.[!.]*
-          # Delete files and directories starting with .. plus any other character
+          # Удаление файлов и директорий, начинающихся с ".." и любого другого символа
           rm -rf "${WORKSPACE_SOURCE_PATH}"/..?*
         fi
-
