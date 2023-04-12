@@ -3,6 +3,9 @@ oc create deployment accounts \
   --replicas=3 \
   --dry-run=client -o yaml > deploy/deployment.yaml
 
+################################
+#
+################################
 
           env:
           - name: DATABASE_HOST
