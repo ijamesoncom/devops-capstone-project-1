@@ -42,7 +42,7 @@ spec:
       # Ссылка на предопределенную задачу 'cleanup'
       taskRef:
         name: cleanup
-
+  
     # Задача 2: Clone (Git-Clone Task)
     - name: clone
       # Рабочие области, используемые в задаче
@@ -64,3 +64,23 @@ spec:
       # Указание на выполнение задачи 'clone' после завершения задачи 'init'
       runAfter:
         - init
+
+    # Задача 3: lint (flake8 Task)    
+    - name: lint
+      workspaces:
+        # Указываем рабочую область 'source', которая будет использоваться для задачи lint
+        - name: source
+          workspace: pipeline-workspace
+      taskRef:
+        # Ссылка на задачу flake8, которая будет выполняться в этом шаге
+        name: flake8
+      params:
+        # Устанавливаем образ для выполнения flake8 в контейнере
+      - name: image
+        value: "python:3.9-slim"
+      # Указываем аргументы, которые будут переданы flake8 для выполнения статического анализа кода
+      - name: args
+        value: ["--count", "--max-complexity=10", "--max-line-length=127", "--statistics"]
+      runAfter:
+        # Задаем зависимость от шага 'clone', чтобы задача lint выполнялась только после успешного завершения шага 'clone'
+        - clone
