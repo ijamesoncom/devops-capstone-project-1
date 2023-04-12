@@ -66,6 +66,14 @@ spec:
     - name: remove
       # Используемый образ контейнера
       image: alpine:3
+      # Лимиты и запросы на ресурсы
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
       # Переменные среды для контейнера
       env:
         # Установка переменной окружения WORKSPACE_SOURCE_PATH
