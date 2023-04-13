@@ -32,7 +32,7 @@ spec:
     # Параметр 'build-image'
     - name: build-image
 
-    
+
   # Список задач, выполняемых в Pipeline
   tasks:
     ################################################
@@ -156,5 +156,45 @@ spec:
           # Это гарантирует, что тесты и проверка кода будут выполнены перед сборкой Docker образа.
           - tests
           - lint
+
+
+    ################################################
+    # Задача 5: Build (docker Task)
+    ################################################
+    - name: deploy
+      # Определение рабочих пространств (workspaces), которые будут использованы этой задачей.
+      workspaces:
+        # Определение рабочего пространства с именем "manifest-dir".
+        - name: manifest-dir
+          # Привязка рабочего пространства "manifest-dir" к рабочему пространству "pipeline-workspace".
+          workspace: pipeline-workspace
+      # Ссылка на определение Task, который будет выполняться в этой задаче.
+      taskRef:
+        # Имя Task, который будет выполняться в этой задаче (в данном случае, ClusterTask с именем "openshift-client").
+        name: openshift-client
+        # Указываем тип задачи (Task или ClusterTask). Здесь используется ClusterTask.
+        kind: ClusterTask
+      # Определение параметров, которые будут переданы задаче.
+      params:
+        # Определение параметра "SCRIPT" и его значения.
+        # Этот скрипт будет выполняться внутри задачи "deploy" и содержит команды для развертывания приложения в OpenShift.
+        - name: SCRIPT
+          value: |
+            echo "Updating manifest..."
+            # Заменяем IMAGE_NAME_HERE на актуальное имя собранного образа.
+            sed -i "s|IMAGE_NAME_HERE|$(params.build-image)|g" deploy/deployment.yaml
+            # Выводим содержимое обновленного файла манифеста.
+            cat deploy/deployment.yaml
+            
+            echo "Deploying to OpenShift..."
+            # Применяем обновленный манифест для развертывания приложения в OpenShift.
+            oc apply -f deploy/
+            # Выводим информацию о развернутых pods с меткой app=accounts.
+            oc get pods -l app=accounts
+      # Определение зависимостей между задачами в рамках Tekton Pipeline.
+      runAfter:
+        # Задача "deploy" будет запущена после завершения задачи с именем "build".
+        # Это гарантирует, что развертывание будет выполнено только после успешной сборки Docker образа.
+        - build
 
 
