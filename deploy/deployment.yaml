@@ -3,39 +3,38 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: accounts
-  name: accounts
+    app: accounts  # Метка, которая идентифицирует данный Deployment как часть приложения accounts.
+  name: accounts  # Имя данного Deployment.
 spec:
-  replicas: 3
+  replicas: 3  # Количество реплик (экземпляров) приложения, которые должны быть развернуты.
   selector:
     matchLabels:
-      app: accounts
-  strategy: {}
+      app: accounts  # Метка, по которой будут выбираться Pods, созданные данным Deployment.
+  strategy: {}  # Стратегия обновления Deployment. Если пусто, используется стратегия RollingUpdate по умолчанию.
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: accounts
+        app: accounts  # Метка для Pods, созданных данным Deployment.
     spec:
       containers:
-      - image: us.icr.io/sn-labs-kukushkincv/accounts:1
-        name: accounts
-        
-        env:
+      - image: IMAGE_NAME_HERE  # Имя образа контейнера. Здесь будет заменено на актуальное имя образа в Tekton Pipeline.
+        name: accounts  # Имя контейнера внутри Pod.
+        env:  # Определение переменных окружения для контейнера.
           - name: DATABASE_HOST
-            value: postgresql
+            value: postgresql  # Имя хоста, на котором развернута база данных PostgreSQL.
           - name: DATABASE_NAME
             valueFrom:
               secretKeyRef:
-                name: postgresql
-                key: database-name
+                name: postgresql  # Имя секрета, содержащего данные для доступа к базе данных.
+                key: database-name  # Ключ, содержащий имя базы данных в секрете.
           - name: DATABASE_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: postgresql
-                key: database-password
+                name: postgresql  # Имя секрета, содержащего данные для доступа к базе данных.
+                key: database-password  # Ключ, содержащий пароль для доступа к базе данных в секрете.
           - name: DATABASE_USER
             valueFrom:
               secretKeyRef:
-                name: postgresql
-                key: database-user
+                name: postgresql  # Имя секрета, содержащего данные для доступа к базе данных.
+                key: database-user  # Ключ, содержащий имя пользователя для доступа к базе данных в секрете.
