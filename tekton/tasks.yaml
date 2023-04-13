@@ -1,4 +1,6 @@
+################################################
 # Задача 1: Echo Task
+################################################
 ---
 # Версия API для Tekton Pipelines
 apiVersion: tekton.dev/v1beta1
@@ -37,7 +39,9 @@ spec:
       args: ["$(params.message)"]
 
 
+################################################
 # Задача 2: Cleanup Task
+################################################
 ---
 # Версия API для Tekton Pipelines
 apiVersion: tekton.dev/v1beta1
@@ -104,3 +108,49 @@ spec:
           # Удаление файлов и директорий, начинающихся с ".." и любого другого символа
           rm -rf "${WORKSPACE_SOURCE_PATH}"/..?*
         fi
+
+
+################################################
+# Задача 3: Test Task (nosetests)
+################################################
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: nose
+spec:
+  description: This task will run nosetests on the provided input.
+  workspaces:
+    # Определение рабочей области 'source', которая будет использоваться для хранения кода
+    - name: source
+  params:
+    # Определение параметра 'args' для передачи аргументов nose
+    - name: args
+      description: Arguments to pass to nose
+      type: string
+      default: "-v"
+    # Определение параметра 'database_uri' для передачи строки подключения к базе данных
+    - name: database_uri
+      description: Database connection string
+      type: string
+      default: "sqlite:///test.db"
+  steps:
+    - name: nosetests
+      # Используется образ Python 3.9-slim для выполнения nosetests
+      image: python:3.9-slim
+      # Установка рабочей директории для контейнера с использованием пути рабочей области 'source'
+      workingDir: $(workspaces.source.path)
+      env:
+        # Установка переменной окружения DATABASE_URI со значением из параметра 'database_uri'
+        - name: DATABASE_URI
+          value: $(params.database_uri)
+      script: |
+        #!/bin/bash
+        set -e
+
+        echo "***** Installing dependencies *****"
+        python -m pip install --upgrade pip wheel
+        pip install -qr requirements.txt
+
+        echo "***** Running nosetests with: $(params.args)"
+        nosetests $(params.args)
