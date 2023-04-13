@@ -1,0 +1,19 @@
+(venv) theia:devops-capstone-project$ tkn pipeline start cd-pipeline \
+>     -p repo-url="https://github.com/$GITHUB_ACCOUNT/devops-capstone-project.git" \
+>     -p branch=cd-pipeline \
+>     -p build-image=image-registry.openshift-image-registry.svc:5000/$SN_ICR_NAMESPACE/accounts:1 \
+>     -w name=pipeline-workspace,claimName=pipelinerun-pvc \
+>     -s pipeline \
+>     --showlog
+cPipelineRun started: cd-pipeline-run-6dzdm
+Waiting for logs to be available...
+(venv) theia:devops-capstone-project$ 
+
+(venv) theia:devops-capstone-project$ tkn pipelinerun ls
+NAME                    STARTED          DURATION   STATUS
+cd-pipeline-run-6dzdm   1 minute ago     1s         Failed
+
+(venv) theia:devops-capstone-project$ tkn pipelinerun logs cd-pipeline-run-6dzdm
+task init has failed: failed to create task run pod "cd-pipeline-run-6dzdm-init": pods "cd-pipeline-run-6dzdm-init-pod" is forbidden: failed quota: kukushkincv-resourcequota: must specify limits.cpu for: place-scripts,prepare,working-dir-initializer; limits.memory for: place-scripts,prepare,working-dir-initializer. Maybe missing or invalid Task sn-labs-kukushkincv/cleanup
+pod for taskrun cd-pipeline-run-6dzdm-init not available yet
+Tasks Completed: 1 (Failed: 1, Cancelled 0), Skipped: 5
